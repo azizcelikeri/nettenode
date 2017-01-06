@@ -7,12 +7,13 @@ class Inv_Nettenode_Admin {
 	public static function adminInıt(){
 		register_setting( 'inv_vpos_settings', 'inv_vpos_setting1' );
 		register_setting( 'inv_vpos_settings', 'inv_vpos_setting2' );
-		register_setting( 'inv_dia_settings', 'inv_dia_setting1' );
-		register_setting( 'inv_dia_settings', 'inv_dia_setting2' );
+		register_setting( 'inv_dia_settings', 'inv_dia_username' );
+		register_setting( 'inv_dia_settings', 'inv_dia_password' );
+		register_setting( 'inv_dia_settings', 'inv_dia_host' );
 		register_setting( 'inv_email_settings', 'inv_email_setting1' );
 		register_setting( 'inv_email_settings', 'inv_email_setting2' );
-		register_setting( 'inv_page_settings', 'inv_page_setting1' );
-		register_setting( 'inv_page_settings', 'inv_page_setting2' );
+		register_setting( 'inv_page_settings', 'inv_page_login' );
+		register_setting( 'inv_page_settings', 'inv_page_register' );
 
 
 	}
@@ -69,12 +70,16 @@ class Inv_Nettenode_Admin {
 		        	<h3>Dia Ayarları</h3>
 		        	<table class="form-table">
 						<tr valign="top">
-        					<th scope="row">Dia Settings1</th>
-					 		<td><input name="inv_dia_setting1" value="<?php echo esc_attr( get_option('inv_dia_setting1') ); ?>"></td>
+        					<th scope="row">Dia Username</th>
+					 		<td><input name="inv_dia_username" value="<?php echo esc_attr( get_option('inv_dia_username') ); ?>"></td>
 					 	</tr>
 					 	<tr valign="top">
-					 		<th scope="row">Dia Settings2</th>
-					 		<td><input name="inv_dia_setting2" value="<?php echo esc_attr( get_option('inv_dia_setting2') ); ?>"></td>
+					 		<th scope="row">Dia Password</th>
+					 		<td><input name="inv_dia_password" value="<?php echo esc_attr( get_option('inv_dia_password') ); ?>"></td>
+					 	</tr>
+					 	<tr valign="top">
+					 		<th scope="row">Dia Host</th>
+					 		<td><input name="inv_dia_host" value="<?php echo esc_attr( get_option('inv_dia_host') ); ?>"></td>
 					 	</tr>
 					</table>
 		        	<?php settings_fields( 'inv_dia_settings' ); ?>
@@ -98,16 +103,58 @@ class Inv_Nettenode_Admin {
 		            <?php submit_button(); ?>
 		        <?php elseif ($active_tab == "page_settings") : ?>
 					<h3>Sayfa Ayarları</h3>
+					<?php 
+
+						// WP_Query arguments
+						$args = array(
+							'post_type' => 'page',
+							'sort_order' => 'ASC',
+							'sort_column' => 'post_title',
+						);
+
+						// The Query
+						$pages = get_pages( $args );
+
+						
+					?>
+
+
+
 					<table class="form-table">
 						<tr valign="top">
-        					<th scope="row">Page Settings1</th>
-					 		<td><input name="inv_page_setting1" value="<?php echo esc_attr( get_option('inv_page_setting1') ); ?>"></td>
+        					<th scope="row">Login Page</th>
+					 		<td>
+					 			<select name="inv_page_login">
+					 				<?php 
+					 					foreach ( $pages as $page ) {
+										  	$option = '<option value="'.$page->ID.'" '.(get_option('inv_page_login') == $page->ID ? 'selected="selected"':'').'>';
+											$option .= $page->post_title;
+											$option .= '</option>';
+											echo $option;
+										}
+					 				?>
+					 			</select>
+					 		</td>
 					 	</tr>
 					 	<tr valign="top">
 					 		<th scope="row">Page Settings2</th>
-					 		<td><input name="inv_page_setting2" value="<?php echo esc_attr( get_option('inv_page_setting2') ); ?>" /></td>
+					 		<td>
+					 			<select name="inv_page_register">
+					 				<?php 
+					 					foreach ( $pages as $page ) {
+										  	$option = '<option value="'.$page->ID.'" '.(get_option('inv_page_register') == $page->ID ? 'selected="selected"':'').'>';
+											$option .= $page->post_title;
+											$option .= '</option>';
+											echo $option;
+										}
+					 				?>
+					 			</select>
+					 		</td>
 					 	</tr>
 					</table>
+
+
+
 					<?php settings_fields( 'inv_page_settings' ); ?>
 		            <?php do_settings_sections( 'inv_page_settings' ); ?> 
 		            <?php submit_button(); ?>
@@ -122,5 +169,29 @@ class Inv_Nettenode_Admin {
 		<?php
 
 	}
+
+	public static function saveUserExtraFields($user_id ){
+		if ( !current_user_can( 'edit_user', $user_id ) )
+		return false;
+
+		update_user_meta( absint( $user_id ), 'cari_no', wp_kses_post( $_POST['cari_no'] ) );
+	}
+
+
+
+	public static function showUserExtraFields($user) { ?>
+		<h3>Netten Öde Bilgileri</h3>
+		<table class="form-table">
+			<tr>
+				<th><label for="cari_no">Cari No</label></th>
+				<td>
+					<input type="text" name="cari_no" id="cari_no" value="<?php echo esc_attr( get_user_meta( $user->ID,'cari_no',true  ) ); ?>" class="regular-text" /><br />
+					<span class="description">Kullanıcının cari numarasını giriniz.</span>
+				</td>
+			</tr>
+		</table>
+	<?php
+	}
+
 
 }
