@@ -16,6 +16,9 @@ define( 'INV_NETTENODE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 require_once( INV_NETTENODE_PLUGIN_DIR . 'class.inv_shortcodes.php' );
 require_once( INV_NETTENODE_PLUGIN_DIR . 'class.inv_nettenode-frontend.php' );
 require_once( INV_NETTENODE_PLUGIN_DIR . 'class.inv_nettenode-ajax.php' );
+require_once( INV_NETTENODE_PLUGIN_DIR . 'class.inv_nettenode-activation.php' );
+
+register_activation_hook( __FILE__, array( 'Inv_Nettenode_Activation', 'onActivation' ) );
 
 if ( is_admin() ) {
 	require_once( INV_NETTENODE_PLUGIN_DIR . 'class.inv_nettenode-admin.php' );

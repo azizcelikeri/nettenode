@@ -19,13 +19,16 @@ class Inv_Nettenode_Admin {
 	}
 
 	public static function adminMenuInıt() {
-		add_menu_page( 
-			"Netten Öde", 
-			"Netten Öde", 
-			"manage_options", 
-			'inv_nettenode_ayarlar', 
+		add_submenu_page( 
+			'options-general.php',
+			'Netten Öde', 
+			'Netten Öde',  
+			'manage_options', 
+			'inv_nettenode_ayarlar',
 			array('Inv_Nettenode_Admin','displayAdminPage') 
+
 			);
+
 	}
 
 	public static function displayAdminPage(){
@@ -137,7 +140,7 @@ class Inv_Nettenode_Admin {
 					 		</td>
 					 	</tr>
 					 	<tr valign="top">
-					 		<th scope="row">Page Settings2</th>
+					 		<th scope="row">Register Page</th>
 					 		<td>
 					 			<select name="inv_page_register">
 					 				<?php 
