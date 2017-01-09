@@ -24,11 +24,9 @@ class Inv_Nettenode_Shortcodes{
 
     public function faturalarShortcode()
     {
-
     	
 
-    	$diaSessionId = $_COOKIE["dia_session_id"];
-    	var_dump($diaSessionId);
+    	$diaSessionId = get_transient( 'dia_session_id' );
     	$url = esc_attr( get_option('inv_dia_host') )."scf/json";
 
 		// SESSION ID MANUEL GİRİLMELİ
@@ -85,8 +83,7 @@ class Inv_Nettenode_Shortcodes{
 
     public function cariBakiyeShortcode()
     {
-    	$diaSessionId = $_COOKIE["dia_session_id"];
-    	var_dump($diaSessionId);
+    	$diaSessionId = get_transient( 'dia_session_id' );
     	$url = esc_attr( get_option('inv_dia_host') )."scf/json";
 
 		// SESSION ID MANUEL GİRİLMELİ
@@ -133,9 +130,6 @@ class Inv_Nettenode_Shortcodes{
         $outputString .= '</table>';
 
         return $outputString;
-
-
-
 
     }
 

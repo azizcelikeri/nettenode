@@ -5,6 +5,7 @@ class Inv_Nettenode_Front_End {
 	{
 		add_filter( 'the_content', array($this, 'contentFilter') );
 		add_action( 'wp_enqueue_scripts', array($this, 'addStylesScripts') );
+		add_action("init",array($this, 'checkDiaCookie'));
 		add_action('wp_login', array($this, 'loginDia'));
 	}
 
@@ -63,7 +64,7 @@ class Inv_Nettenode_Front_End {
 	    wp_localize_script( 'nettenode', 'ajax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 	}
 	
-	public function loginDia()	
+	public static function loginDia()	
 	{
 	    $url = esc_attr( get_option('inv_dia_host') )."sis/json";
 
@@ -89,10 +90,17 @@ class Inv_Nettenode_Front_End {
 		$result = curl_exec($curl);
 		$json=json_decode($result,true);
 		curl_close($curl);
-		var_dump($json);
-        setcookie('dia_session_id', $json["msg"], strtotime('+1 hour'),'/');
+        set_transient( 'dia_session_id', $json["msg"], HOUR_IN_SECONDS );
 	}
 
+	public static function checkDiaCookie(){
+		if(is_user_logged_in()){
+			if(false === get_transient('dia_session_id') ){
+				self::loginDia();
+			}	
+		}
+		
+	}
 
 
 }
