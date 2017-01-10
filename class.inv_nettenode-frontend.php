@@ -16,7 +16,12 @@ class Inv_Nettenode_Front_End {
 						$content = self::getRegisterForm().$content;
 					break;
 				case get_option('inv_page_login'):
-						$content = wp_login_form(array('echo'=>false) ).$content;
+						$extraContent = '';
+						if(function_exists('wsl_render_auth_widget')){
+							$extraContent .= wsl_render_auth_widget();
+						}
+						$extraContent .= wp_login_form(array('echo'=>false) );
+						$content .= $extraContent.$content;
 					break;
 				
 				default:
@@ -31,7 +36,11 @@ class Inv_Nettenode_Front_End {
 	public function getRegisterForm()
 	{
 		ob_start(); 
+		if(function_exists('wsl_render_auth_widget')){
+			echo wsl_render_auth_widget();
+		}
 		?>
+
 			<form id="inv_registerForm">
 				<div class="form-group">
 					<label for="username">User Name</label>
